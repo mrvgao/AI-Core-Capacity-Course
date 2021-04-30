@@ -112,7 +112,7 @@ for i in random_test_indices:
 
     print('RM: {}, LSTAT: {}, EXPENSIVE: {}, Predicated: {}'.format(x1, x2, y, predicate_label))
 
-### 剩下一件事情，就是要检查我们这个模型的准确度到底如何！！
+# 剩下一件事情，就是要检查我们这个模型的准确度到底如何！！
 """
 如何衡量模型的好坏：
 1. accuracy 准确度

@@ -45,7 +45,7 @@ lstat = dataframe['LSTAT']
 target = dataframe['price']
 
 
-def model(x, w, b):
+def linear(x, w, b):
     # vectorized model
     return np.dot(x, w.T) + b
 
@@ -63,35 +63,49 @@ def partial_b(x, y, yhat):
     return 2 * np.mean((yhat - y))
 
 
-w = np.random.random_sample((1, 2)) # w normal
-b = np.random.random() # 0 深度学习的时候会和大家详细解释
-learning_rate = 1e-5
-epoch = 200
-losses = []
+def optimize(w, b, x, y, yhat, pw, pb, learning_rate):
+    w = w + -1 * pw(x, y, yhat) * learning_rate
+    b = b + -1 * pb(x, y, yhat) * learning_rate
 
-for i in range(epoch):
-    batch_loss = []
-    for batch in range(len(rm)):
-        # batch training
-        index = random.choice(range(len(rm)))
-        rm_x, lstat_x = rm[index], lstat[index]
-        x = np.array([rm_x, lstat_x])
-        y = target[index]
+    return w, b
 
-        yhat = model(x, w, b)
-        loss_v = loss(yhat, y)
 
-        batch_loss.append(loss_v)
+def train(model, loss, pw, pb):
 
-        w = w + -1 * partial_w(x, y, yhat) * learning_rate
-        b = b + -1 * partial_b(x, y, yhat) * learning_rate
+    w = np.random.random_sample((1, 2)) # w normal
+    b = np.random.random() # 0 深度学习的时候会和大家详细解释
+    learning_rate = 1e-5
+    epoch = 200
+    losses = []
 
-        if batch % 100 == 0:
-            print('Epoch: {} Batch: {}, loss: {}'.format(i, batch, loss_v))
-    losses.append(np.mean(batch_loss))
+    for i in range(epoch):
+        batch_loss = []
+        for batch in range(len(rm)):
+            # batch training
+            index = random.choice(range(len(rm)))
+            rm_x, lstat_x = rm[index], lstat[index]
+            x = np.array([rm_x, lstat_x])
+            y = target[index]
 
-predicate = model(np.array([19, 7]), w, b)
-print(predicate)
+            yhat = model(x, w, b)
+            loss_v = loss(yhat, y)
+
+            batch_loss.append(loss_v)
+
+            w, b = optimize(w, b, x, y, yhat, learning_rate, pw, pb)
+
+            if batch % 100 == 0:
+                print('Epoch: {} Batch: {}, loss: {}'.format(i, batch, loss_v))
+        losses.append(np.mean(batch_loss))
+
+    return model, w, b, losses
+
+
+if __name__ == "__main__":
+    model, w, b, losses = train(linear, loss, partial_w, partial_b)
+    predicate = model(np.array([19, 7]), w, b)
+    print(predicate)
+
 
 
 
