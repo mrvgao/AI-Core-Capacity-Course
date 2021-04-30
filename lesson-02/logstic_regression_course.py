@@ -14,13 +14,11 @@ Harder than deep learning:
 """
 
 
-import random
-
 from sklearn.datasets import load_boston
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
 import numpy as np
+from linear_regression_course import train
+
 
 dataset = load_boston()
 data = dataset['data']
@@ -72,35 +70,7 @@ def partial_b(x, y, yhat):
     return np.sum((yhat - y))
 
 
-w = np.random.random_sample((1, 2))
-b = np.random.random()
-
-learning_rate = 1e-5
-
-epoch = 200
-
-losses = []
-
-for i in range(epoch):
-    batch_loss = []
-    for batch in range(len(rm)):
-        index = random.choice(range(len(rm)))
-
-        x = np.array([rm[index], lstat[index]])
-        y = target[index]
-
-        yhat = model(x, w, b)
-
-        loss_v = loss(yhat, y)
-        batch_loss.append(loss_v)
-
-        w = w + -1 * partial_w(x, y, yhat) * learning_rate
-        b = b + -1 * partial_b(x, y, yhat) * learning_rate
-
-        if batch % 100 == 0:
-            print('Epoch: {} Batch: {}, loss: {}'.format(i, batch, loss_v))
-    losses.append(np.mean(batch_loss))
-
+model, w, b, losses = train(model, loss, partial_w, partial_b)
 
 random_test_indices = np.random.choice(range(len(rm)), size=100)
 decision_boundary = 0.5
