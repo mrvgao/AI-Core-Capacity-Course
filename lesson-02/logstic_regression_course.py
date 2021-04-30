@@ -70,7 +70,7 @@ def partial_b(x, y, yhat):
     return np.sum((yhat - y))
 
 
-model, w, b, losses = train(model, loss, partial_w, partial_b)
+model, w, b, losses = train(model, target,loss, partial_w, partial_b)
 
 random_test_indices = np.random.choice(range(len(rm)), size=100)
 decision_boundary = 0.5

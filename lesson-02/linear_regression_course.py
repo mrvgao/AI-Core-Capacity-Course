@@ -7,12 +7,9 @@ Boston: room size, subway, highway, crime rate 有一个比较明显的关系，
 """
 import random
 
-from sklearn.datasets import load_boston
-import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
 import numpy as np
-
+import pandas as pd
+from sklearn.datasets import load_boston
 
 """
 为什么我没有一行一行解释代码
@@ -42,7 +39,6 @@ dataframe['price'] = target
 
 rm = dataframe['RM']
 lstat = dataframe['LSTAT']
-target = dataframe['price']
 
 
 def linear(x, w, b):
@@ -70,7 +66,7 @@ def optimize(w, b, x, y, yhat, pw, pb, learning_rate):
     return w, b
 
 
-def train(model, loss, pw, pb):
+def train(model_to_be_train, target, loss, pw, pb):
 
     w = np.random.random_sample((1, 2)) # w normal
     b = np.random.random() # 0 深度学习的时候会和大家详细解释
@@ -87,7 +83,7 @@ def train(model, loss, pw, pb):
             x = np.array([rm_x, lstat_x])
             y = target[index]
 
-            yhat = model(x, w, b)
+            yhat = model_to_be_train(x, w, b)
             loss_v = loss(yhat, y)
 
             batch_loss.append(loss_v)
@@ -98,14 +94,20 @@ def train(model, loss, pw, pb):
                 print('Epoch: {} Batch: {}, loss: {}'.format(i, batch, loss_v))
         losses.append(np.mean(batch_loss))
 
-    return model, w, b, losses
+    return model_to_be_train, w, b, losses
 
 
 if __name__ == "__main__":
-    model, w, b, losses = train(linear, loss, partial_w, partial_b)
+    import matplotlib.pyplot as plt
+
+    target = dataframe['price']
+
+    model, w, b, losses = train(linear, target, loss, partial_w, partial_b)
+    plt.plot(losses)
     predicate = model(np.array([19, 7]), w, b)
     print(predicate)
 
+    plt.show()
 
 
 
