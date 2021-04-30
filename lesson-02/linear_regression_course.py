@@ -92,7 +92,7 @@ def train(model, loss, pw, pb):
 
             batch_loss.append(loss_v)
 
-            w, b = optimize(w, b, x, y, yhat, learning_rate, pw, pb)
+            w, b = optimize(w, b, x, y, yhat, pw, pb, learning_rate)
 
             if batch % 100 == 0:
                 print('Epoch: {} Batch: {}, loss: {}'.format(i, batch, loss_v))
